@@ -1,9 +1,12 @@
 #include <player.h>
-#include <helper.h>
 
 Player::Player(){
     name = "Player";
     speed *= 1.5f;
+}
+
+void Player::Defeat() {
+    // not doing any thing
 }
 
 void Player::Update(float deltaTime) {

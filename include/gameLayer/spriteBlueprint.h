@@ -1,5 +1,6 @@
 #pragma once
 #include <gl2d/gl2d.h>
+#include <string>
 
 struct SpriteBlueprint {
 	char* path;
@@ -9,7 +10,8 @@ struct SpriteBlueprint {
 	float size;
 	bool isAtlas;
 	int layer = 0;
+	void SetTexture(int x, int y, std::string path, int atlasSize, int size);
+	void SetTexture(std::string path, int size);
 	void SetTexture(int x, int y, char* path, int atlasSize, int size);
 	void SetTexture(char* path, int size);
-	void SetLayer(int l);
 };

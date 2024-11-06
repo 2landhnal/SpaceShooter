@@ -11,6 +11,7 @@
 #include <gl2d/gl2d.h>
 #include <platformTools.h>
 #include <glui/glui.h>
+#include <ctime>
 
 #include <bullet.h>
 #include <vector>
@@ -24,44 +25,82 @@
 #include <renderManager.h>
 #include <spriteBlueprint.h>
 #include <global.h>
+#include <healthBar.h>
 
 #include <tiledRenderer.h>
 
 constexpr int BACKGROUNDS = 3;
 
+struct GameData {
+	int score=0;
+	float enemySpawnTime;
+	float enemySpawnCounter;
+	time_t timestamp;
+
+	void Reset() {
+		score = 0;
+		enemySpawnTime = 5;
+		enemySpawnCounter = enemySpawnTime;
+		time(&timestamp);
+	}
+};
+
+GameData gameData;
+
 RenderManager& renderManager = RenderManager::GetInstance();
 GameManager& gameManager = GameManager::GetInstance();
-Player& player = Player::GetInstance();
 Global& global = Global::GetInstance();
+Player& player = Player::GetInstance();
 InputHandler inputHandler;
 
 gl2d::Renderer2D renderer;
 
-gl2d::Texture backgroundTexture[BACKGROUNDS];
-TiledRenderer tiledRenderer[BACKGROUNDS];
 
-gl2d::Texture upperBackgroundTexture;
-TiledRenderer upperTiledRenderer;
-
-// bullet
-gl2d::Texture bulletsTexture;
-gl2d::TextureAtlasPadding bulletsAtlas;
-
-void SpawnEnemy() {
+#pragma region handle spawn enemy
+Enemy* NewEnemy() {
 	Enemy* e = new Enemy();
-	e->markedForDeletion = false;
 	e->spriteRenderer.SetBlueprint(global.enemyBlueprint);
 	*(e->Position()) = *player.Position();
+	return e;
 }
 
-void restartGame()
+void SpawnSingleEnemy()
+{
+	Enemy* e = NewEnemy();
+	*(e->Position()) = *(player.Position());
+	float disRadius = 2000;
+	glm::vec2 offset(disRadius, 0);
+	offset = glm::vec2(glm::vec4(offset, 0, 1) * glm::rotate(glm::mat4(1.f), glm::radians((float)(rand() % 360)), glm::vec3(0, 0, 1)));
+	*(e->Position()) += offset;
+}
+
+void HanldeSpawnEnemy(float deltaTime) {
+	gameData.enemySpawnCounter -= deltaTime;
+	if (gameData.enemySpawnCounter < 0)
+	{
+		gameData.enemySpawnCounter = gameData.enemySpawnTime + rand() % 2;
+		SpawnSingleEnemy();
+		if (rand() % 3 == 0)
+		{
+			SpawnSingleEnemy();
+		}
+	}
+}
+
+#pragma endregion
+
+void RestartGame()
 {
 	renderer.currentCamera.follow(*player.Position()
 		,550, 0, 0, renderer.windowW, renderer.windowH);
 	renderManager.Clear();
 	gameManager.Clear();
+	global.ships.clear();
+	global.ships.push_back(&player);
 	renderManager.AddObject(&player.spriteRenderer);
 	gameManager.AddObject(&player);
+	gameData.Reset();
+	player.Revive();
 }
 
 
@@ -71,32 +110,25 @@ bool initGame()
 	gl2d::init();
 	renderer.create();
 
+	RestartGame();
 	global.InitSpriteConfig();
 
 	// load space ship texture
 	player.spriteRenderer.SetBlueprint(global.playerBlueprint);
-	// load bg texture
-	backgroundTexture[0].loadFromFile(RESOURCES_PATH "background/bg1.png", true);
-	backgroundTexture[1].loadFromFile(RESOURCES_PATH "background/bg2.png", true);
-	backgroundTexture[2].loadFromFile(RESOURCES_PATH "background/bg3.png", true);
-	// upper
-	upperBackgroundTexture.loadFromFile(RESOURCES_PATH "background/bg4.png", true);
-
-	// paralax setup
-	for (int i = 0; i < BACKGROUNDS; i++) {
-		tiledRenderer[i].paralaxStrength = i*(1.0f/ BACKGROUNDS);
+	// load bg 
+	int bgLayers = global.backGroundBlueprint.size();
+	for (int i = 0; i < bgLayers; i++) {
+		TiledRenderer* tiledBg = new TiledRenderer();
+		tiledBg->SetBlueprint(global.backGroundBlueprint[i]);
+		tiledBg->paralaxStrength = i * (1.0f / bgLayers);
 	}
-
-	// set up tiled renderer
-	for (int i = 0; i < BACKGROUNDS; i++) {
-		tiledRenderer[i].texture = backgroundTexture[i];
+	// load ug
+	int ugLayers = global.upGroundBlueprint.size();
+	for (int i = 0; i < ugLayers; i++) {
+		TiledRenderer* tiledUg = new TiledRenderer();;
+		tiledUg->SetBlueprint(global.upGroundBlueprint[i]);
+		tiledUg->paralaxStrength = 1 + i * (1.0f / ugLayers);
 	}
-
-	// upper
-	upperTiledRenderer.texture = upperBackgroundTexture;
-
-	restartGame();
-	
 	return true;
 }
 
@@ -115,19 +147,20 @@ bool gameLogic(float deltaTime)
 	renderer.updateWindowMetrics(w, h);
 #pragma endregion
 
+#pragma region spawn enemy
+	HanldeSpawnEnemy(deltaTime);
+#pragma endregion
+
 #pragma region update
+	if (player.hp <= 0) {
+		RestartGame();
+		return true;
+	}
 	inputHandler.Update(deltaTime);
 
 	gameManager.RemoveMarkedObjects();
 	for (BaseObject* b : gameManager.objects) {
 		b->Update(deltaTime);
-	}
-#pragma endregion
-
-#pragma region render background
-	for (int i = 0; i < BACKGROUNDS; i++)
-	{
-		tiledRenderer[i].render(renderer);
 	}
 #pragma endregion
 
@@ -145,25 +178,8 @@ bool gameLogic(float deltaTime)
 	}
 #pragma endregion
 
-#pragma region render upper bg
-	upperTiledRenderer.render(renderer);
-#pragma endregion
-
 #pragma region ui
-	renderer.pushCamera();
-	{
-		glui::Frame f({ 0,0, w, h });
-		glui::Box healthBox = glui::Box().xLeftPerc(0.65).yTopPerc(0.1).
-			xDimensionPercentage(0.3).yAspectRatio(1.f / 8.f);
-		renderer.renderRectangle(healthBox, global.healthBar);
-		glm::vec4 newRect = healthBox();
-		newRect.z *= player.hp;
-		glm::vec4 textCoords = { 0,1,1,0 };
-		textCoords.z *= player.hp;
-		renderer.renderRectangle(newRect, global.health, Colors_White, {}, {},
-			textCoords);
-	}
-	renderer.popCamera();
+	RenderHealthBar(renderer, player, w, h);
 #pragma endregion
 
 	renderer.flush();
@@ -174,15 +190,17 @@ bool gameLogic(float deltaTime)
 	ImGui::Begin("debug");
 	ImGui::Text("BaseObject count: %d", gameManager.objects.size());
 	ImGui::Text("View rect: (%f, %f)", (*player.Position()).x, (*player.Position()).y);
+	ImGui::Text("Player layer: %d", player.spriteRenderer.blueprint.layer);
+	ImGui::Text("Render layer 10: %d", renderManager.objects[10].size());
 	if (ImGui::Button("Spawn enemy"))
 	{
-		SpawnEnemy();
+		SpawnSingleEnemy();
 	}
 	if (ImGui::Button("Reset game"))
 	{
-		restartGame();
+		RestartGame();
 	}
-	ImGui::SliderFloat("Player Health", &player.hp, 0, 1);
+	ImGui::SliderFloat("Player Health", &player.hp, 0, player.maxHp);
 
 	ImGui::End();
 

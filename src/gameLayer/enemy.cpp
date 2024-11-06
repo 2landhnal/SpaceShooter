@@ -21,7 +21,7 @@ void Enemy::Update(float deltaTime)
 	{
 		if (firedTime <= 0.f)
 		{
-			//we can shoot
+			// Can shoot
 			Shoot();
 			firedTime = fireTimeReset;
 		}
@@ -48,4 +48,8 @@ void Enemy::Update(float deltaTime)
 	length = glm::clamp(length, 0.1f, 3.f);
 	spriteRenderer.viewDirection = glm::normalize(newDirection);
 	spriteRenderer.position += (deltaTime * speed * spriteRenderer.viewDirection * length);
+}
+
+void Enemy::Delete() {
+	SpaceShip::Delete();
 }

@@ -10,13 +10,13 @@ SpriteRenderer::SpriteRenderer() {
 SpriteRenderer:: ~SpriteRenderer() {
     RenderManager::GetInstance().RemoveObject(this);
 }
-void SpriteRenderer::SetBlueprint(SpriteBlueprint blueprint) {
-	this->blueprint = blueprint;
-}
 
-void SpriteRenderer::SetLayer(int l) {
+void SpriteRenderer::Delete() {
 	RenderManager::GetInstance().RemoveObject(this);
-	this->blueprint.SetLayer(l);
+}
+void SpriteRenderer::SetBlueprint(SpriteBlueprint blueprint) {
+	RenderManager::GetInstance().RemoveObject(this);
+	this->blueprint = blueprint;
 	RenderManager::GetInstance().AddObject(this);
 }
 

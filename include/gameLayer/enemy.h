@@ -11,4 +11,5 @@ private:
 public:
 	Enemy();
 	void Update(float deltaTime) override;
+	void Delete() override;
 };

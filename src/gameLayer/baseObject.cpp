@@ -1,6 +1,5 @@
 #include <baseObject.h>
 #include <gameManager.h>
-#include <iostream>
 
 BaseObject::BaseObject() {
     markedForDeletion = false;

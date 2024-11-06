@@ -1,9 +1,9 @@
 #pragma once
 #include <gl2d/gl2d.h>
 #include <spaceShip.h>
-#include <singleton.h>
+#include <helper.h>
 
-class Player:public  SpaceShip
+class Player: public SpaceShip
 {
 private:
 	Player();
@@ -12,4 +12,5 @@ private:
 public:
 	static Player& GetInstance();
 	void Update(float deltaTime) override;
+	void Defeat() override;
 };
