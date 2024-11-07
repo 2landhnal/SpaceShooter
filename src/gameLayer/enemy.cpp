@@ -49,7 +49,3 @@ void Enemy::Update(float deltaTime)
 	spriteRenderer.viewDirection = glm::normalize(newDirection);
 	spriteRenderer.position += (deltaTime * speed * spriteRenderer.viewDirection * length);
 }
-
-void Enemy::Delete() {
-	SpaceShip::Delete();
-}

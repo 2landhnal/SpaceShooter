@@ -16,6 +16,6 @@ public:
 	SpriteRenderer spriteRenderer;
 	void Update(float deltaTime) override;
 	void SetOwner(SpaceShip* spaceShip);
-	void Delete() override;
+	void Delete();
 	bool isCollide(SpaceShip* ship);
 };

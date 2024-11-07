@@ -11,9 +11,6 @@ SpriteRenderer:: ~SpriteRenderer() {
     RenderManager::GetInstance().RemoveObject(this);
 }
 
-void SpriteRenderer::Delete() {
-	RenderManager::GetInstance().RemoveObject(this);
-}
 void SpriteRenderer::SetBlueprint(SpriteBlueprint blueprint) {
 	RenderManager::GetInstance().RemoveObject(this);
 	this->blueprint = blueprint;

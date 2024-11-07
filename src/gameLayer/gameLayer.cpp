@@ -158,7 +158,6 @@ bool gameLogic(float deltaTime)
 	}
 	inputHandler.Update(deltaTime);
 
-	gameManager.RemoveMarkedObjects();
 	for (BaseObject* b : gameManager.objects) {
 		b->Update(deltaTime);
 	}
@@ -191,6 +190,7 @@ bool gameLogic(float deltaTime)
 	ImGui::Text("BaseObject count: %d", gameManager.objects.size());
 	ImGui::Text("View rect: (%f, %f)", (*player.Position()).x, (*player.Position()).y);
 	ImGui::Text("Player layer: %d", player.spriteRenderer.blueprint.layer);
+	ImGui::Text("Ship count: %d", global.ships.size());
 	ImGui::Text("Render layer 10: %d", renderManager.objects[10].size());
 	if (ImGui::Button("Spawn enemy"))
 	{

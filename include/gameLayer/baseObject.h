@@ -6,8 +6,7 @@ class BaseObject
 {
 public:
     std::string name = "Base"; // for debug
-    bool markedForDeletion = false;
-    virtual void Delete();
     BaseObject();
+    ~BaseObject();
 	virtual void Update(float deltaTime);
 };

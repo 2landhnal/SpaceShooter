@@ -15,7 +15,7 @@ public:
 	void Shoot();
 	virtual void TakeDamage(float amount);
 	virtual void Defeat();
-	void Delete() override;
 	void Revive();
 	SpaceShip();
+	~SpaceShip();
 };

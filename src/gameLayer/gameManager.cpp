@@ -9,14 +9,11 @@ void GameManager::AddObject(BaseObject* obj) {
     objects.push_back(obj);
 }
 
-void GameManager::RemoveMarkedObjects() {
-    for (auto it = objects.begin(); it != objects.end(); ) {
-        if ((*it)->markedForDeletion) {
-            //delete* it; // Delete the object
-            it = objects.erase(it); // Erase from vector and get the next iterator
-        }
-        else {
-            ++it;
+void GameManager::RemoveObject(BaseObject* obj) {
+    for (auto it = objects.begin(); it != objects.end(); ++it) {
+        if (*it == obj) {
+            objects.erase(it);
+            break; // Exit the loop after erasing to avoid invalid iterator access
         }
     }
 }

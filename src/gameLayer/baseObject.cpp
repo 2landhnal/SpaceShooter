@@ -2,11 +2,10 @@
 #include <gameManager.h>
 
 BaseObject::BaseObject() {
-    markedForDeletion = false;
     GameManager::GetInstance().AddObject(this);
+}
+BaseObject::~BaseObject() {
+    GameManager::GetInstance().RemoveObject(this);
 }
 
 void BaseObject::Update(float deltaTime) {};
-void BaseObject::Delete() {
-    markedForDeletion = true;
-}

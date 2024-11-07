@@ -18,7 +18,7 @@ SpaceShip::SpaceShip() {
 	Global::GetInstance().ships.push_back(this);
 }
 
-void SpaceShip::Delete() {
+SpaceShip::~SpaceShip() {
 	auto& ships = Global::GetInstance().ships;
 	// Find this spaceship in the ships vector
 	auto it = std::find(ships.begin(), ships.end(), this);
@@ -26,12 +26,10 @@ void SpaceShip::Delete() {
 	if (it != ships.end()) {
 		ships.erase(it);
 	}
-	BaseObject::Delete();
-	spriteRenderer.Delete();
 }
 
 void SpaceShip::Defeat() {
-	Delete();
+	delete this;
 }
 
 void SpaceShip::Revive() {

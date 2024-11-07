@@ -13,5 +13,5 @@ public:
 	 std::vector<BaseObject*> objects;
 	 void Clear();
 	 void AddObject(BaseObject* obj);
-	 void RemoveMarkedObjects();
+	 void RemoveObject(BaseObject* obj);
 };

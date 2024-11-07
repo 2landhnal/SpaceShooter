@@ -37,6 +37,5 @@ float Bullet::GetDamage() {
 
 void Bullet::Delete()
 {
-	BaseObject::Delete();
-	spriteRenderer.Delete();
+	delete this;
 }
