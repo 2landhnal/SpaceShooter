@@ -21,12 +21,12 @@
 #include <helper.h>
 #include <baseObject.h>
 #include <gameManager.h>
-#include <spriteRenderer.h>
 #include <renderManager.h>
 #include <spriteBlueprint.h>
 #include <global.h>
 #include <healthBar.h>
-
+#include <sceneManager.h>
+#include <animation.h>
 #include <tiledRenderer.h>
 
 constexpr int BACKGROUNDS = 3;
@@ -47,8 +47,10 @@ struct GameData {
 
 GameData gameData;
 
+SceneManager& sceneManager = SceneManager::GetInstance();
 RenderManager& renderManager = RenderManager::GetInstance();
 GameManager& gameManager = GameManager::GetInstance();
+
 Global& global = Global::GetInstance();
 Player& player = Player::GetInstance();
 InputHandler inputHandler;
@@ -59,19 +61,20 @@ gl2d::Renderer2D renderer;
 #pragma region handle spawn enemy
 Enemy* NewEnemy() {
 	Enemy* e = new Enemy();
-	e->spriteRenderer.SetBlueprint(global.enemyBlueprint);
-	*(e->Position()) = *player.Position();
+	e->SetBlueprint(global.enemyBlueprint);
+	e->blueprint.texturePos = {rand()%2, rand()%2};
+	e->position = player.position;
 	return e;
 }
 
 void SpawnSingleEnemy()
 {
 	Enemy* e = NewEnemy();
-	*(e->Position()) = *(player.Position());
+	e->position = player.position;
 	float disRadius = 2000;
 	glm::vec2 offset(disRadius, 0);
 	offset = glm::vec2(glm::vec4(offset, 0, 1) * glm::rotate(glm::mat4(1.f), glm::radians((float)(rand() % 360)), glm::vec3(0, 0, 1)));
-	*(e->Position()) += offset;
+	e->position += offset;
 }
 
 void HanldeSpawnEnemy(float deltaTime) {
@@ -91,16 +94,15 @@ void HanldeSpawnEnemy(float deltaTime) {
 
 void RestartGame()
 {
-	renderer.currentCamera.follow(*player.Position()
+	renderer.currentCamera.follow(player.position
 		,550, 0, 0, renderer.windowW, renderer.windowH);
-	renderManager.Clear();
-	gameManager.Clear();
-	global.ships.clear();
-	global.ships.push_back(&player);
-	renderManager.AddObject(&player.spriteRenderer);
-	gameManager.AddObject(&player);
+	sceneManager.Restart();
 	gameData.Reset();
 	player.Revive();
+}
+
+void SpawnExplosion() {
+	global.SpawnExplosion(player.position);
 }
 
 
@@ -110,11 +112,11 @@ bool initGame()
 	gl2d::init();
 	renderer.create();
 
-	RestartGame();
 	global.InitSpriteConfig();
 
 	// load space ship texture
-	player.spriteRenderer.SetBlueprint(global.playerBlueprint);
+	player.SetBlueprint(global.playerBlueprint);
+	player.speed *= 3.0f;
 	// load bg 
 	int bgLayers = global.backGroundBlueprint.size();
 	for (int i = 0; i < bgLayers; i++) {
@@ -129,6 +131,9 @@ bool initGame()
 		tiledUg->SetBlueprint(global.upGroundBlueprint[i]);
 		tiledUg->paralaxStrength = 1 + i * (1.0f / ugLayers);
 	}
+
+	sceneManager.StartCounting();
+	RestartGame();
 	return true;
 }
 
@@ -156,7 +161,6 @@ bool gameLogic(float deltaTime)
 		RestartGame();
 		return true;
 	}
-	inputHandler.Update(deltaTime);
 
 	for (BaseObject* b : gameManager.objects) {
 		b->Update(deltaTime);
@@ -165,7 +169,7 @@ bool gameLogic(float deltaTime)
 
 #pragma region follow
 	renderer.currentCamera.zoom = 0.5;
-	renderer.currentCamera.follow(*player.Position()
+	renderer.currentCamera.follow(player.position
 		, deltaTime * 550, 1, 150, w, h);
 #pragma endregion
 
@@ -188,10 +192,14 @@ bool gameLogic(float deltaTime)
 
 	ImGui::Begin("debug");
 	ImGui::Text("BaseObject count: %d", gameManager.objects.size());
-	ImGui::Text("View rect: (%f, %f)", (*player.Position()).x, (*player.Position()).y);
-	ImGui::Text("Player layer: %d", player.spriteRenderer.blueprint.layer);
+	ImGui::Text("View rect: (%f, %f)", player.position.x, player.position.y);
+	ImGui::Text("Player layer: %d", player.blueprint.layer);
 	ImGui::Text("Ship count: %d", global.ships.size());
 	ImGui::Text("Render layer 10: %d", renderManager.objects[10].size());
+	if (ImGui::Button("Spawn explosion"))
+	{
+		SpawnExplosion();
+	}
 	if (ImGui::Button("Spawn enemy"))
 	{
 		SpawnSingleEnemy();

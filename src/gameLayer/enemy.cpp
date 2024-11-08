@@ -13,10 +13,10 @@ Enemy::Enemy()
 
 void Enemy::Update(float deltaTime)
 {
-	glm::vec2 playerPos = Player::GetInstance().spriteRenderer.position;
-	glm::vec2 directionToPlayer = GetLookDirection(spriteRenderer.position, playerPos);
+	glm::vec2 playerPos = Player::GetInstance().position;
+	glm::vec2 directionToPlayer = GetLookDirection(position, playerPos);
 	glm::vec2 newDirection = {};
-	bool shoot = (glm::length(directionToPlayer + spriteRenderer.viewDirection) >= fireRange);
+	bool shoot = (glm::length(directionToPlayer + viewDirection) >= fireRange);
 	if (shoot)
 	{
 		if (firedTime <= 0.f)
@@ -28,7 +28,7 @@ void Enemy::Update(float deltaTime)
 	}
 	firedTime -= deltaTime;
 	if (firedTime < 0) { firedTime = 0.f; }
-	if (glm::length(directionToPlayer + spriteRenderer.viewDirection) <= 0.2)
+	if (glm::length(directionToPlayer + viewDirection) <= 0.2)
 	{
 		if (rand() % 2)
 		{
@@ -42,10 +42,10 @@ void Enemy::Update(float deltaTime)
 	else
 	{
 		newDirection =
-			deltaTime * turnSpeed * directionToPlayer + spriteRenderer.viewDirection;
+			deltaTime * turnSpeed * directionToPlayer + viewDirection;
 	}
 	float length = glm::length(newDirection);
 	length = glm::clamp(length, 0.1f, 3.f);
-	spriteRenderer.viewDirection = glm::normalize(newDirection);
-	spriteRenderer.position += (deltaTime * speed * spriteRenderer.viewDirection * length);
+	viewDirection = glm::normalize(newDirection);
+	position += (deltaTime * speed * viewDirection * length);
 }

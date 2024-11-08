@@ -40,7 +40,7 @@ void InputHandler::Update(float deltaTime)
 	{
 		deltaMove = glm::normalize(deltaMove);
 		deltaMove *= deltaTime * Player::GetInstance().speed;
-		*Player::GetInstance().Position() += deltaMove;
+		Player::GetInstance().position += deltaMove;
 	}
 
 #pragma region handle bulets

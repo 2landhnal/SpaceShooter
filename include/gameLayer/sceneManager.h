@@ -8,7 +8,7 @@ class SceneManager : public Singleton<SceneManager>
 {
 private:
 	friend class Singleton<SceneManager>;
-	SceneManager() {}
+	SceneManager();
 public:
 	time_t startAt;
 	std::vector<TimeLogger*> objects;
@@ -16,4 +16,6 @@ public:
 	void StartCounting();
 	void Clear();
 	void AddObject(TimeLogger* obj);
+	void RemoveObject(TimeLogger* obj);
+	void Restart();
 };

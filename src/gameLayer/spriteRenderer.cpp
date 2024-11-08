@@ -23,7 +23,7 @@ void SpriteRenderer::Render(gl2d::Renderer2D& renderer)
 	if (blueprint.isAtlas)
 	{
 		renderer.renderRectangle({ position - glm::vec2(blueprint.size / 2,blueprint.size / 2), blueprint.size,blueprint.size },
-			blueprint.texture, Colors_White, {}, angle, blueprint.atlas.get(blueprint.texturePos.x, blueprint.texturePos.y));
+			blueprint.texture, Colors_White, {}, glm::degrees(angle) + 90.f, blueprint.atlas.get(blueprint.texturePos.x, blueprint.texturePos.y));
 	}
 	else 
 	{

@@ -4,8 +4,11 @@
 
 class TimeLogger
 {
+private:
+	bool isDeleted;
 public:
 	time_t createAt;
+	void MarkDeleted();
 	TimeLogger();
-	~TimeLogger();
+	virtual ~TimeLogger();
 };

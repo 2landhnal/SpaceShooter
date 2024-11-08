@@ -4,18 +4,24 @@
 #include <baseObject.h>
 #include <spriteRenderer.h>
 #include <global.h>
+#include <damageable.h>
 
-class Bullet:public BaseObject
+class Bullet:public BaseObject, public Damageable, public SpriteRenderer
 {
 private:
 	float speed = 2000.0f;
 	float damage = 1;
 public:
+	Bullet();
+	~Bullet();
 	float GetDamage();
 	SpaceShip* owner; 
-	SpriteRenderer spriteRenderer;
-	void Update(float deltaTime) override;
 	void SetOwner(SpaceShip* spaceShip);
-	void Delete();
-	bool isCollide(SpaceShip* ship);
+	void Destroy();
+	bool isCollide(SpriteRenderer* col);
+
+	// baseObj
+	void Update(float deltaTime) override;
+	// damagable
+	void ShowEffect() override;
 };

@@ -1,8 +1,9 @@
 #pragma once
 #include <gl2d/gl2d.h>
 #include <string>
+#include <timeLogger.h>
 
-class BaseObject
+class BaseObject : public TimeLogger
 {
 public:
     std::string name = "Base"; // for debug

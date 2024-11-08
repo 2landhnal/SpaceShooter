@@ -1,8 +1,9 @@
 #pragma once
 #include <gl2d/gl2d.h>
 #include <spriteBlueprint.h>
+#include <timeLogger.h>
 
-class SpriteRenderer
+class SpriteRenderer: public TimeLogger
 {
 public:
 	SpriteBlueprint blueprint;

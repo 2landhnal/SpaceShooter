@@ -1,30 +1,42 @@
 #include <bullet.h>	
 #include <player.h>
+#include <gameManager.h>
 
 void Bullet::Update(float deltaTime)
 {
-	spriteRenderer.position += spriteRenderer.viewDirection * deltaTime * speed;
+	position += viewDirection * deltaTime * speed;
 
-	if (glm::distance(spriteRenderer.position, Player::GetInstance().spriteRenderer.position) > 5'000)
+	if (glm::distance(position, Player::GetInstance().position) > 5'000)
 	{
-		this->Delete();
+		this->Destroy();
 	}
 
-	for (auto&ship : Global::GetInstance().ships)
-	{
-		if (ship == owner) continue;
-		if (isCollide(ship))
+	if (owner != nullptr) {
+		for (auto& obj : GameManager::GetInstance().objects)
 		{
-			ship->TakeDamage(damage);
-			Delete();
-			break;
+			// bullet itself
+			if (obj == dynamic_cast<BaseObject*>(this)) continue;
+
+			// owner check
+			BaseObject* baseOwner = dynamic_cast<BaseObject*>(owner);
+			if (baseOwner == obj) continue;
+
+			Damageable* dmgObj = dynamic_cast<Damageable*>(obj);
+			SpriteRenderer* spriteRendererObj = dynamic_cast<SpriteRenderer*>(obj);
+
+			if (spriteRendererObj && dmgObj && isCollide(spriteRendererObj))
+			{
+				dmgObj->TakeDamage(damage);
+				Destroy();
+				break;
+			}
 		}
 	}
 }
 
-bool Bullet::isCollide(SpaceShip* ship)
+bool Bullet::isCollide(SpriteRenderer* col)
 {
-	return glm::distance(spriteRenderer.position, *ship->Position()) <= ship->spriteRenderer.blueprint.size;
+	return glm::distance(position, col->position) <= col->blueprint.size;
 }
 
 void Bullet::SetOwner(SpaceShip* spaceShip) {
@@ -35,7 +47,22 @@ float Bullet::GetDamage() {
 	return damage;
 }
 
-void Bullet::Delete()
+void Bullet::Destroy()
 {
+	ShowEffect();
 	delete this;
+}
+
+void Bullet::ShowEffect()
+{
+	Global::GetInstance().SpawnBulletCollision(position);
+}
+
+Bullet::Bullet() {
+	maxHp = 1;
+	Revive();
+}
+
+Bullet::~Bullet() {
+
 }

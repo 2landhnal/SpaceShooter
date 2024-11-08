@@ -3,11 +3,11 @@
 #include "platformInput.h"
 #include <baseObject.h>
 
-class InputHandler
+class InputHandler: public BaseObject
 {
 private:
 	glm::vec2 deltaMove = {};
 public:
-	void Update(float deltaTime);
+	void Update(float deltaTime)  override;
 	glm::vec2 GetDeltaMove();
 };

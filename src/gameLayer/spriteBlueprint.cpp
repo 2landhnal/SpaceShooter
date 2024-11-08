@@ -5,7 +5,7 @@ void SpriteBlueprint::SetTexture(int x, int y, std::string path, int atlasSize, 
 	isAtlas = true;
 	this->size = size;
 	texture.loadFromFileWithPixelPadding(path.c_str(), atlasSize, true);
-	atlas = gl2d::TextureAtlasPadding(3, 2, texture.GetSize().x, texture.GetSize().y);
+	atlas = gl2d::TextureAtlasPadding(x, y, texture.GetSize().x, texture.GetSize().y);
 }
 
 void SpriteBlueprint::SetTexture(std::string path, int size)
@@ -20,7 +20,7 @@ void SpriteBlueprint::SetTexture(int x, int y, char* path, int atlasSize, int si
 	isAtlas = true;
 	this->size = size;
 	texture.loadFromFileWithPixelPadding(path, atlasSize, true);
-	atlas = gl2d::TextureAtlasPadding(3, 2, texture.GetSize().x, texture.GetSize().y);
+	atlas = gl2d::TextureAtlasPadding(x, y, texture.GetSize().x, texture.GetSize().y);
 }
 
 void SpriteBlueprint::SetTexture(char* path, int size)

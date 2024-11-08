@@ -2,7 +2,6 @@
 
 Player::Player(){
     name = "Player";
-    speed *= 1.5f;
 }
 
 void Player::Defeat() {
@@ -19,7 +18,7 @@ void Player::Update(float deltaTime) {
 
     glm::vec2 mousePos = platform::getRelMousePosition();
     glm::vec2 centerScreen = { w / 2.f, h / 2.f };
-    spriteRenderer.viewDirection = GetLookDirection(centerScreen, mousePos);
+    viewDirection = GetLookDirection(centerScreen, mousePos);
 #pragma endregion
 }
 
