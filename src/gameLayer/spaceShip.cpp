@@ -2,16 +2,14 @@
 #include <global.h>
 
 void SpaceShip::Shoot() {
-	Bullet* b = new Bullet();
-	b->SetOwner(this);
-	b->SetBlueprint(Global::GetInstance().bulletBlueprint);
-	b->position = position;
-	b->viewDirection = viewDirection;
+	shooter->Shoot();
 }
 
 SpaceShip::SpaceShip() {
 	name = "Spaceship";
 	hp = maxHp;
+	shooter = new BulletShooter();
+	shooter->SetOwner(this);
 	Global::GetInstance().ships.push_back(this);
 }
 

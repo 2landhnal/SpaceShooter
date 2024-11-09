@@ -21,6 +21,9 @@ void Bullet::Update(float deltaTime)
 			BaseObject* baseOwner = dynamic_cast<BaseObject*>(owner);
 			if (baseOwner == obj) continue;
 
+			Bullet* bulletObj = dynamic_cast<Bullet*>(obj);
+			if (bulletObj && bulletObj->owner == this->owner) continue;
+
 			Damageable* dmgObj = dynamic_cast<Damageable*>(obj);
 			SpriteRenderer* spriteRendererObj = dynamic_cast<SpriteRenderer*>(obj);
 

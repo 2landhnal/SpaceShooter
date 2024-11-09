@@ -1,7 +1,10 @@
 #include <player.h>
+#include <forkShooter.h>
 
 Player::Player(){
     name = "Player";
+    shooter = new ForkShooter();
+    shooter->SetOwner(this);
 }
 
 void Player::Defeat() {
