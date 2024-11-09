@@ -18,7 +18,6 @@ public:
 	SpaceShip* owner; 
 	void SetOwner(SpaceShip* spaceShip);
 	void Explode();
-	bool isCollide(SpriteRenderer* col);
 
 	// baseObj
 	void Update(float deltaTime) override;

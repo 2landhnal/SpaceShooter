@@ -28,6 +28,7 @@
 #include <sceneManager.h>
 #include <animation.h>
 #include <tiledRenderer.h>
+#include <itemBullet.h>
 
 constexpr int BACKGROUNDS = 3;
 
@@ -91,6 +92,18 @@ void HanldeSpawnEnemy(float deltaTime) {
 }
 
 #pragma endregion
+
+void SpawnSingleItem()
+{
+	ItemBullet* item = new ItemBullet();
+	item->SetBlueprint(global.bulletItemBlueprint);
+	item->viewDirection = GetRotateDirection(item->viewDirection, -90);
+	item->position = player.position;
+	float disRadius = 1000;
+	glm::vec2 offset(disRadius, 0);
+	offset = glm::vec2(glm::vec4(offset, 0, 1) * glm::rotate(glm::mat4(1.f), glm::radians((float)(rand() % 360)), glm::vec3(0, 0, 1)));
+	item->position += offset;
+}
 
 void RestartGame()
 {
@@ -202,9 +215,9 @@ bool gameLogic(float deltaTime)
 	{
 		SpawnExplosion();
 	}
-	if (ImGui::Button("Spawn enemy"))
+	if (ImGui::Button("Spawn item"))
 	{
-		SpawnSingleEnemy();
+		SpawnSingleItem();
 	}
 	if (ImGui::Button("Reset game"))
 	{

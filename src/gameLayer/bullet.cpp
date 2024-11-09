@@ -14,13 +14,14 @@ void Bullet::Update(float deltaTime)
 	if (owner != nullptr) {
 		for (auto& obj : GameManager::GetInstance().objects)
 		{
-			// bullet itself
+			// check collide with itself
 			if (obj == dynamic_cast<BaseObject*>(this)) continue;
 
-			// owner check
+			// check collide with owner
 			BaseObject* baseOwner = dynamic_cast<BaseObject*>(owner);
 			if (baseOwner == obj) continue;
 
+			// check same owner
 			Bullet* bulletObj = dynamic_cast<Bullet*>(obj);
 			if (bulletObj && bulletObj->owner == this->owner) continue;
 
@@ -35,11 +36,6 @@ void Bullet::Update(float deltaTime)
 			}
 		}
 	}
-}
-
-bool Bullet::isCollide(SpriteRenderer* col)
-{
-	return glm::distance(position, col->position) <= col->blueprint.size;
 }
 
 void Bullet::SetOwner(SpaceShip* spaceShip) {

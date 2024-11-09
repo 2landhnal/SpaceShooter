@@ -13,6 +13,11 @@ SpaceShip::SpaceShip() {
 	Global::GetInstance().ships.push_back(this);
 }
 
+void SpaceShip::SetShooter(BulletShooter* newShooter) {
+	shooter = newShooter;
+	shooter->SetOwner(this);
+}
+
 SpaceShip::~SpaceShip() {
 	auto& ships = Global::GetInstance().ships;
 	// Find this spaceship in the ships vector

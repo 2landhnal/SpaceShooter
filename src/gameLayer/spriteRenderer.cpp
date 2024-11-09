@@ -33,3 +33,8 @@ void SpriteRenderer::Render(gl2d::Renderer2D& renderer)
 			Colors_White, {}, glm::degrees(angle) + 90.f);
 	}
 }
+
+bool SpriteRenderer::isCollide(SpriteRenderer* col)
+{
+	return glm::distance(position, col->position) <= col->blueprint.size;
+}

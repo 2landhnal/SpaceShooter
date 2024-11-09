@@ -17,8 +17,12 @@ public:
 	gl2d::Texture healthBar;
 	gl2d::Texture health;
 	std::vector <SpriteBlueprint> backGroundBlueprint, upGroundBlueprint;
+	// object
 	SpriteBlueprint playerBlueprint, enemyBlueprint, bulletBlueprint;
+	// fx
 	SpriteBlueprint explosionBlueprint, bulletCollisionBlueprint;
+	// item
+	SpriteBlueprint bulletItemBlueprint, hpItemBlueprint;
 	void InitSpriteConfig();
 	void SpawnExplosion(glm::vec2 pos);
 	void SpawnBulletCollision(glm::vec2 pos);

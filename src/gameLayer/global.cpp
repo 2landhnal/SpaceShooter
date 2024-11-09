@@ -7,6 +7,10 @@ void Global::InitSpriteConfig() {
 	healthBar.loadFromFile(RESOURCES_PATH "UI/healthBar.png", true);
 	health.loadFromFile(RESOURCES_PATH "UI/health.png", true);
 
+	// item
+	bulletItemBlueprint.SetTexture(RESOURCES_PATH "item/bullet.png", 100);
+	hpItemBlueprint.SetTexture(RESOURCES_PATH "item/hp.png", 100);
+
 	// explosion
 	explosionBlueprint.SetTexture(7, 1, RESOURCES_PATH "/fx/explosion.png", 336, 500);
 	bulletCollisionBlueprint.SetTexture(8, 1, RESOURCES_PATH "/fx/bulletCol.png", 256, 200);

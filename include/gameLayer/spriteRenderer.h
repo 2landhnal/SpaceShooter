@@ -13,6 +13,7 @@ public:
 
 	virtual void Render(gl2d::Renderer2D& renderer);
 	void SetBlueprint(SpriteBlueprint blueprint);
+	bool SpriteRenderer::isCollide(SpriteRenderer* col);
     SpriteRenderer();
     ~SpriteRenderer();
 };
