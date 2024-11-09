@@ -2,6 +2,7 @@
 #include <gameManager.h>
 
 BaseObject::BaseObject() {
+    markForDelete = false;
     GameManager::GetInstance().AddObject(this);
 }
 BaseObject::~BaseObject() {
@@ -9,3 +10,10 @@ BaseObject::~BaseObject() {
 }
 
 void BaseObject::Update(float deltaTime) {};
+void BaseObject::MarkForDelete() {
+    markForDelete = true;
+}
+
+void BaseObject::Destroy() {
+    MarkForDelete();
+}

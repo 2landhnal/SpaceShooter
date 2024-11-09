@@ -162,6 +162,7 @@ bool gameLogic(float deltaTime)
 		return true;
 	}
 
+	gameManager.RemoveMarkedForDelete();
 	for (BaseObject* b : gameManager.objects) {
 		b->Update(deltaTime);
 	}
@@ -169,6 +170,7 @@ bool gameLogic(float deltaTime)
 
 #pragma region follow
 	renderer.currentCamera.zoom = 0.5;
+	// renderer.currentCamera.rotation = fromDirectionToDegree(player.viewDirection)+90;
 	renderer.currentCamera.follow(player.position
 		, deltaTime * 550, 1, 150, w, h);
 #pragma endregion

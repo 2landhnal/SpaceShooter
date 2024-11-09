@@ -7,7 +7,10 @@ class BaseObject : public TimeLogger
 {
 public:
     std::string name = "Base"; // for debug
+    bool markForDelete = false;
     BaseObject();
     ~BaseObject();
 	virtual void Update(float deltaTime);
+    void MarkForDelete();
+    virtual void Destroy();
 };

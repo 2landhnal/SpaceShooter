@@ -8,7 +8,7 @@ void Bullet::Update(float deltaTime)
 
 	if (glm::distance(position, Player::GetInstance().position) > 5'000)
 	{
-		this->Destroy();
+		this->Explode();
 	}
 
 	if (owner != nullptr) {
@@ -27,7 +27,7 @@ void Bullet::Update(float deltaTime)
 			if (spriteRendererObj && dmgObj && isCollide(spriteRendererObj))
 			{
 				dmgObj->TakeDamage(damage);
-				Destroy();
+				Explode();
 				break;
 			}
 		}
@@ -47,10 +47,10 @@ float Bullet::GetDamage() {
 	return damage;
 }
 
-void Bullet::Destroy()
+void Bullet::Explode()
 {
 	ShowEffect();
-	delete this;
+	Destroy();
 }
 
 void Bullet::ShowEffect()

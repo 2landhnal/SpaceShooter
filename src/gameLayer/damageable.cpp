@@ -1,4 +1,5 @@
 #include <damageable.h>
+#include <baseObject.h>
 
 void Damageable::TakeDamage(float amount) {
 	hp -= amount;
@@ -8,7 +9,13 @@ void Damageable::TakeDamage(float amount) {
 }
 void Damageable::Defeat() {
 	ShowEffect();
-	delete this;
+	BaseObject* baseObj = dynamic_cast<BaseObject*>(this);
+	if (baseObj) {
+		baseObj->MarkForDelete();
+	}
+	else {
+		delete this;
+	}
 }
 void Damageable::ShowEffect() {
 	// 

@@ -14,4 +14,5 @@ public:
 	 void Clear();
 	 void AddObject(BaseObject* obj);
 	 void RemoveObject(BaseObject* obj);
+	 void RemoveMarkedForDelete();
 };

@@ -17,7 +17,7 @@ public:
 	float GetDamage();
 	SpaceShip* owner; 
 	void SetOwner(SpaceShip* spaceShip);
-	void Destroy();
+	void Explode();
 	bool isCollide(SpriteRenderer* col);
 
 	// baseObj
