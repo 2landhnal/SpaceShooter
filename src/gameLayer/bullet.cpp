@@ -1,6 +1,7 @@
 #include <bullet.h>	
 #include <player.h>
 #include <gameManager.h>
+#include <raudio.h>
 
 void Bullet::Update(float deltaTime)
 {
@@ -60,6 +61,9 @@ void Bullet::ShowEffect()
 Bullet::Bullet() {
 	maxHp = 1;
 	Revive();
+	Sound shootSound = Global::GetInstance().shootSound;
+	PlaySound(shootSound);
+	//if(!IsSoundPlaying(shootSound))PlaySound(shootSound);
 }
 
 Bullet::~Bullet() {

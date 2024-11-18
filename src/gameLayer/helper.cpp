@@ -39,6 +39,12 @@ glm::vec2 GetRotateDirection(glm::vec2& from, float angle) {
 
 	// to radian
 	float pi = atan(1) * 4;
+	while (angle < 0) {
+		angle += 360;
+	}
+	while (angle > 360) {
+		angle -= 360;
+	}
 	angle = angle * (pi / 180.0f);
 
 

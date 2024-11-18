@@ -29,22 +29,33 @@
 #include <animation.h>
 #include <tiledRenderer.h>
 #include <itemBullet.h>
+#include <itemHP.h>
 
 constexpr int BACKGROUNDS = 3;
 
+struct Counter {
+	float time;
+	float counter;
+	Counter(float time) {
+		this->time = rand()%(int)time;
+		this->counter = counter;
+	}
+};
+
 struct GameData {
 	int score=0;
-	float enemySpawnTime;
-	float enemySpawnCounter;
+	Counter* enemySpawnTime, *itemSpawnCounter, *hpSpawnCounter;
 	time_t timestamp;
 
 	void Reset() {
 		score = 0;
-		enemySpawnTime = 5;
-		enemySpawnCounter = enemySpawnTime;
+		enemySpawnTime = new Counter(5);
+		itemSpawnCounter = new Counter(30);
+		hpSpawnCounter = new Counter(30);
 		time(&timestamp);
 	}
 };
+bool pauseGame = false;
 
 GameData gameData;
 
@@ -79,10 +90,10 @@ void SpawnSingleEnemy()
 }
 
 void HanldeSpawnEnemy(float deltaTime) {
-	gameData.enemySpawnCounter -= deltaTime;
-	if (gameData.enemySpawnCounter < 0)
+	gameData.enemySpawnTime->counter -= deltaTime;
+	if (gameData.enemySpawnTime->counter < 0)
 	{
-		gameData.enemySpawnCounter = gameData.enemySpawnTime + rand() % 2;
+		gameData.enemySpawnTime->counter = gameData.enemySpawnTime->time + rand() % 2;
 		SpawnSingleEnemy();
 		if (rand() % 3 == 0)
 		{
@@ -104,6 +115,41 @@ void SpawnSingleItem()
 	offset = glm::vec2(glm::vec4(offset, 0, 1) * glm::rotate(glm::mat4(1.f), glm::radians((float)(rand() % 360)), glm::vec3(0, 0, 1)));
 	item->position += offset;
 }
+void SpawnSingleHP()
+{
+	ItemHP* item = new ItemHP();
+	item->SetBlueprint(global.hpItemBlueprint);
+	item->viewDirection = GetRotateDirection(item->viewDirection, -90);
+	item->position = player.position;
+	float disRadius = 1000;
+	glm::vec2 offset(disRadius, 0);
+	offset = glm::vec2(glm::vec4(offset, 0, 1) * glm::rotate(glm::mat4(1.f), glm::radians((float)(rand() % 360)), glm::vec3(0, 0, 1)));
+	item->position += offset;
+}
+
+void HanldeSpawnItem(float deltaTime) {
+	gameData.itemSpawnCounter->counter -= deltaTime;
+	if (gameData.itemSpawnCounter->counter < 0)
+	{
+		gameData.itemSpawnCounter->counter = gameData.itemSpawnCounter->time + rand() % 2;
+		SpawnSingleItem();
+		if (rand() % 3 == 0)
+		{
+			SpawnSingleItem();
+		}
+	}
+
+	gameData.hpSpawnCounter->counter -= deltaTime;
+	if (gameData.hpSpawnCounter->counter < 0)
+	{
+		gameData.hpSpawnCounter->counter = gameData.hpSpawnCounter->time + rand() % 2;
+		SpawnSingleHP();
+		if (rand() % 3 == 0)
+		{
+			SpawnSingleHP();
+		}
+	}
+}
 
 void RestartGame()
 {
@@ -121,6 +167,7 @@ void SpawnExplosion() {
 
 bool initGame()
 {
+	srand(time(NULL));
 	//initializing stuff for the renderer
 	gl2d::init();
 	renderer.create();
@@ -140,7 +187,7 @@ bool initGame()
 	// load ug
 	int ugLayers = global.upGroundBlueprint.size();
 	for (int i = 0; i < ugLayers; i++) {
-		TiledRenderer* tiledUg = new TiledRenderer();;
+		TiledRenderer* tiledUg = new TiledRenderer();
 		tiledUg->SetBlueprint(global.upGroundBlueprint[i]);
 		tiledUg->paralaxStrength = 1 + i * (1.0f / ugLayers);
 	}
@@ -165,28 +212,31 @@ bool gameLogic(float deltaTime)
 	renderer.updateWindowMetrics(w, h);
 #pragma endregion
 
+	if (!pauseGame) {
 #pragma region spawn enemy
-	HanldeSpawnEnemy(deltaTime);
+		HanldeSpawnItem(deltaTime);
+		//HanldeSpawnEnemy(deltaTime);
 #pragma endregion
 
 #pragma region update
-	if (player.hp <= 0) {
-		RestartGame();
-		return true;
-	}
+		if (player.hp <= 0) {
+			RestartGame();
+			return true;
+		}
 
-	gameManager.RemoveMarkedForDelete();
-	for (BaseObject* b : gameManager.objects) {
-		b->Update(deltaTime);
-	}
+		gameManager.RemoveMarkedForDelete();
+		for (BaseObject* b : gameManager.objects) {
+			b->Update(deltaTime);
+		}
 #pragma endregion
 
 #pragma region follow
-	renderer.currentCamera.zoom = 0.5;
-	// renderer.currentCamera.rotation = fromDirectionToDegree(player.viewDirection)+90;
-	renderer.currentCamera.follow(player.position
-		, deltaTime * 550, 1, 150, w, h);
+		renderer.currentCamera.zoom = 0.5;
+		// renderer.currentCamera.rotation = fromDirectionToDegree(player.viewDirection)+90;
+		renderer.currentCamera.follow(player.position
+			, deltaTime * 550, 1, 150, w, h);
 #pragma endregion
+	}
 
 #pragma region render base
 	for (int i = 0; i < renderManager.objects.size(); i++) {
@@ -210,6 +260,7 @@ bool gameLogic(float deltaTime)
 	ImGui::Text("View rect: (%f, %f)", player.position.x, player.position.y);
 	ImGui::Text("Player layer: %d", player.blueprint.layer);
 	ImGui::Text("Ship count: %d", global.ships.size());
+	ImGui::Text("Ship angle: %f", fromDirectionToDegree(player.viewDirection));
 	ImGui::Text("Render layer 10: %d", renderManager.objects[10].size());
 	if (ImGui::Button("Spawn explosion"))
 	{
@@ -222,6 +273,10 @@ bool gameLogic(float deltaTime)
 	if (ImGui::Button("Reset game"))
 	{
 		RestartGame();
+	}
+	if (ImGui::Button("Pause game"))
+	{
+		pauseGame = !pauseGame;
 	}
 	ImGui::SliderFloat("Player Health", &player.hp, 0, player.maxHp);
 
