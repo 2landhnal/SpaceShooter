@@ -215,7 +215,7 @@ bool gameLogic(float deltaTime)
 	if (!pauseGame) {
 #pragma region spawn enemy
 		HanldeSpawnItem(deltaTime);
-		//HanldeSpawnEnemy(deltaTime);
+		HanldeSpawnEnemy(deltaTime);
 #pragma endregion
 
 #pragma region update

@@ -3,7 +3,7 @@
 
 Player::Player(){
     name = "Player";
-    SetShooter(new ForkShooter());
+    //SetShooter(new ForkShooter());
 }
 
 void Player::Defeat() {

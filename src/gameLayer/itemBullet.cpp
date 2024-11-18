@@ -2,6 +2,9 @@
 #include <gameManager.h>
 #include <player.h>
 #include <forkShooter.h>
+#include <doubleShooter.h>
+#include <columnShooter.h>
+#include <circleShooter.h>
 
 void ItemBullet::Update(float deltaTime) 
 {
@@ -23,7 +26,22 @@ void ItemBullet::Trigger(SpaceShip* ship)
 {
 	Sound sound = Global::GetInstance().pickItemSound;
 	PlaySound(sound);
-	int index = rand() % 5;
-	Player::GetInstance().SetShooter(new ForkShooter());
+	int index = rand()%4;
+	switch (index) {
+	case 0:
+		Player::GetInstance().SetShooter(new CircleShooter());
+		break;
+	case 1:
+		Player::GetInstance().SetShooter(new DoubleShooter());
+		break;
+	case 2:
+		Player::GetInstance().SetShooter(new ForkShooter());
+		break;
+	case 3: 
+		Player::GetInstance().SetShooter(new ColumnShooter());
+		break;
+	default:
+		break;
+	}
 	Destroy();
 }
