@@ -13,6 +13,8 @@ public:
 	int speed = 500;  // 500px/s
 	void Shoot();
 	void ShowEffect() override;
+	void Update(float deltaTime) override;
+	virtual bool CollideCheck();
 	virtual void SetShooter(BulletShooter* newShooter);
 	SpaceShip();
 	~SpaceShip();

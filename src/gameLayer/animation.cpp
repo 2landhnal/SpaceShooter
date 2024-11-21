@@ -6,7 +6,7 @@ void Animation::Update(float deltaTime) {
 	if (counter < 0) {
 		counter = duration;
 		index++;
-		if (index == cors.size()) {
+		if (index >= cors.size()) {
 			if (loop) {
 				index = 0;
 			}
@@ -39,6 +39,8 @@ Animation::Animation(SpriteBlueprint blueprint, std::vector<glm::vec2> cors, flo
 	this->cors = cors;
 	this->duration = duration;
 	this->loop = loop;
+	counter = duration;
+	index = 0;
 }
 Animation::Animation(SpriteBlueprint blueprint, std::vector<glm::vec2> cors, float duration, bool loop, std::string prefix, std::string suffix) {
 	this->spriteRenderer.SetBlueprint(blueprint);
@@ -47,6 +49,8 @@ Animation::Animation(SpriteBlueprint blueprint, std::vector<glm::vec2> cors, flo
 	this->loop = loop;
 	this->prefix = prefix;
 	this->suffix = suffix;
+	counter = duration;
+	index = 0;
 }
 
 Animation::Animation() {

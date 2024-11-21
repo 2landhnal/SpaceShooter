@@ -1,11 +1,19 @@
 #include <global.h>
 #include <string>
 #include <animation.h>
+#include <raudio.h>
 
 void Global::InitSpriteConfig() {
+
+	// font
+	font.createFromFile(RESOURCES_PATH "/font/operius.ttf");
+
 	// health bar
 	healthBar.loadFromFile(RESOURCES_PATH "UI/healthBar.png", true);
 	health.loadFromFile(RESOURCES_PATH "UI/health.png", true);
+
+	// ui
+	playButton.loadFromFile(RESOURCES_PATH "UI/btn.png", true);
 
 	// item
 	bulletItemBlueprint.SetTexture(RESOURCES_PATH "item/bullet.png", 100);
@@ -14,10 +22,15 @@ void Global::InitSpriteConfig() {
 	// explosion
 	explosionAnim.blueprint.SetTexture(7, 1, RESOURCES_PATH "/fx/explosion.png", 336, 500);
 	bulletCollisionAnim.blueprint.SetTexture(8, 1, RESOURCES_PATH "/fx/bulletCol.png", 256, 200);
+	pickItemAnim.blueprint.SetTexture(9, 1, RESOURCES_PATH "/fx/pickItem.png", 576, 300);
 	//electricAnim.blueprint.SetTexture(RESOURCES_PATH "bullet/electricBall/1.png", 200);
 
 	// ship
-	playerBlueprint.SetTexture(RESOURCES_PATH "spaceShip/new ships/ship_3.png", 250);
+	for (int i = 0; i < playerBlueprints.size(); i++) {
+		std::string s = "spaceShip/new ships/ship_" + std::to_string(i + 1) + ".png";
+		playerBlueprints[i].SetTexture(RESOURCES_PATH+s, 250);
+		playerBlueprints[i].layer = 1;
+	}
 	enemyBlueprint.SetTexture(2, 2, RESOURCES_PATH "/spaceship/enemy/enemy.png", 96, 250);
 	enemyBlueprint.texturePos = { 0, 0 };
 
@@ -56,9 +69,10 @@ void Global::InitSpriteConfig() {
 	}
 
 	// layer
-	playerBlueprint.layer = 1;
 	enemyBlueprint.layer = 1;
 	explosionAnim.blueprint.layer = 2;
+	bulletCollisionAnim.blueprint.layer = 2;
+	pickItemAnim.blueprint.layer = 2;
 
 	// cors
 	for (int i = 0; i < 7; i++) {
@@ -69,6 +83,10 @@ void Global::InitSpriteConfig() {
 		glm::vec2 v = { i, 0 };
 		bulletCollisionAnim.cors.push_back(v);
 	}
+	for (int i = 0; i < 9; i++) {
+		glm::vec2 v = { i, 0 };
+		pickItemAnim.cors.push_back(v);
+	}
 	//for (int i = 1; i < 61; i++) {
 	//	glm::vec2 v = { i, 0 };
 	//	electricAnim.cors.push_back(v);
@@ -77,27 +95,29 @@ void Global::InitSpriteConfig() {
 	// sound
 	shootSound = LoadSound(RESOURCES_PATH "sfx/shoot2Cutted.wav");
 	pickItemSound = LoadSound(RESOURCES_PATH "sfx/item.wav");
+	music = LoadSound(RESOURCES_PATH "music/bg.mp3");
+	explodeSound = LoadSound(RESOURCES_PATH "sfx/explode.wav");
+
+	SetSoundVolume(music, 0.1);
 	SetSoundVolume(pickItemSound, 0.2);
 	SetSoundVolume(shootSound, 0.2);
+	SetSoundVolume(explodeSound, 0.2);
 }
 
 void Global::SpawnExplosion(glm::vec2 pos) {
 	//Animation* explosion = new Animation(electricAnim.blueprint, electricAnim.cors, 0.08, false, "bullet/electricBall/", ".png");
-	//Animation* explosion = new Animation(explosionAnim.blueprint, explosionAnim.cors, 0.08, false);
-	Animation* explosion = new Animation();
-	explosion->duration = 0.08;
-	explosion->cors = explosionAnim.cors;
-	explosion->spriteRenderer.SetBlueprint(explosionAnim.blueprint);
-	explosion->loop = false;
-	explosion->spriteRenderer.position = pos;
+	Animation* fx = new Animation(explosionAnim.blueprint, explosionAnim.cors, 0.08, false);
+	fx->spriteRenderer.position = pos;
+	Sound sound = explodeSound;
+	PlaySound(sound);
 }
 
 void Global::SpawnBulletCollision(glm::vec2 pos) {
-	Animation* explosion = new Animation();
-	explosion->duration = 0.08;
-	explosion->loop = false;
+	Animation* fx = new Animation(bulletCollisionAnim.blueprint, bulletCollisionAnim.cors, 0.08, false);
+	fx->spriteRenderer.position = pos;
+}
 
-	explosion->cors = bulletCollisionAnim.cors;
-	explosion->spriteRenderer.SetBlueprint(bulletCollisionAnim.blueprint);
-	explosion->spriteRenderer.position = pos;
+void Global::SpawnPickItemFx(glm::vec2 pos) {
+	Animation* fx = new Animation(pickItemAnim.blueprint, pickItemAnim.cors, 0.05, false);
+	fx->spriteRenderer.position = pos;
 }

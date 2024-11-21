@@ -3,10 +3,13 @@
 #include <baseObject.h>
 #include <spriteRenderer.h>
 #include <spaceShip.h>
+#include <global.h>
 
 class Item : public SpriteRenderer, public BaseObject
 {
 public:
 	inline virtual void Update(float deltaTime){}
-	inline virtual void Trigger(SpaceShip* ship) {}
+	inline virtual void Trigger(SpaceShip* ship) {
+		Global::GetInstance().SpawnPickItemFx(position);
+	}
 };

@@ -8,3 +8,4 @@ float GetLookAngle(glm::vec2& from, glm::vec2& to);
 float FromDirectionToAngle(glm::vec2& direction);
 float fromDirectionToDegree(glm::vec2& direction);
 float RadiansToDegrees(float radians);
+bool isClickOn(glm::vec4& boxCor, int w, int h);

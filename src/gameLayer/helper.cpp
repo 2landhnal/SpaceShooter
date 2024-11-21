@@ -67,3 +67,14 @@ float FromDirectionToAngle(glm::vec2& direction)
 {
 	return atan2(direction.y, -direction.x);
 }
+
+bool isClickOn(glm::vec4& boxCor, int w, int h) {
+	if (platform::isLMouseReleased()) {
+		glm::vec2 mousePos = platform::getRelMousePosition();
+		mousePos.x /= w;
+		mousePos.y /= h;
+		return (boxCor.x <= mousePos.x && mousePos.x <= (boxCor.x + boxCor.z))
+			&& (boxCor.y <= mousePos.y && mousePos.y <= (boxCor.y + boxCor.w));
+	}
+	return false;
+}

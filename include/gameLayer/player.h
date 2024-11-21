@@ -13,4 +13,5 @@ public:
 	static Player& GetInstance();
 	void Update(float deltaTime) override;
 	void Defeat() override;
+	bool CollideCheck() override;
 };

@@ -21,6 +21,7 @@ void ItemHP::Update(float deltaTime)
 
 void ItemHP::Trigger(SpaceShip* ship)
 {
+	Item::Trigger(ship);
 	Sound sound = Global::GetInstance().pickItemSound;
 	PlaySound(sound);
 	int index = rand() % 5;

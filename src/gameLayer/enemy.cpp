@@ -1,6 +1,7 @@
 #include <enemy.h>
 #include <player.h>
 #include <helper.h>
+#include <gameData.h>
 
 Enemy::Enemy()
 {
@@ -9,10 +10,14 @@ Enemy::Enemy()
 	turnSpeed += (rand() & 1000) / 500.f;
 	fireRange += (rand() % 1000) / 2000.f;
 	fireTimeReset += (rand() % 1000) / 500;
+
+	maxHp = Global::GetInstance().enemyHp + (rand() % 2)?1:0;
+	hp = maxHp;
 }
 
 void Enemy::Update(float deltaTime)
 {
+	SpaceShip::Update(deltaTime);
 	glm::vec2 playerPos = Player::GetInstance().position;
 	glm::vec2 directionToPlayer = GetLookDirection(position, playerPos);
 	glm::vec2 newDirection = {};
@@ -48,4 +53,9 @@ void Enemy::Update(float deltaTime)
 	length = glm::clamp(length, 0.1f, 3.f);
 	viewDirection = glm::normalize(newDirection);
 	position += (deltaTime * speed * viewDirection * length);
+}
+
+void Enemy::Defeat() {
+	Damageable::Defeat();
+	GameData::GetInstance().score += 10;
 }

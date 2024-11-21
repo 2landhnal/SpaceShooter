@@ -24,6 +24,7 @@ void ItemBullet::Update(float deltaTime)
 
 void ItemBullet::Trigger(SpaceShip* ship) 
 {
+	Item::Trigger(ship);
 	Sound sound = Global::GetInstance().pickItemSound;
 	PlaySound(sound);
 	int index = rand()%4;

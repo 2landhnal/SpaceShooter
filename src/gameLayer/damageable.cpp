@@ -3,7 +3,7 @@
 
 void Damageable::TakeDamage(float amount) {
 	hp -= amount;
-	if (hp < 0) {
+	if (hp <= 0) {
 		Defeat();
 	}
 }

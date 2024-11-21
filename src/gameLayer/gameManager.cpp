@@ -20,7 +20,7 @@ void GameManager::RemoveObject(BaseObject* obj) {
 
 void GameManager::RemoveMarkedForDelete() {
     for (auto it = objects.begin(); it != objects.end();) {
-        if ((*it)->markForDelete || *it == nullptr) {
+        if (*it == nullptr || (*it)->markForDelete) {
             BaseObject* tmp = *it;
             it = objects.erase(it);
             delete tmp;

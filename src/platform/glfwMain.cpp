@@ -316,9 +316,9 @@ int main()
 #endif
 
 
-	int w = 500;
-	int h = 500;
-	wind = glfwCreateWindow(w, h, "geam", nullptr, nullptr);
+	int w = 1920;
+	int h = 1080;
+	wind = glfwCreateWindow(w, h, "Space Shooter", nullptr, nullptr);
 	glfwMakeContextCurrent(wind);
 	glfwSwapInterval(1);
 
