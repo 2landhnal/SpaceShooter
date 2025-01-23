@@ -8,9 +8,9 @@ git clone https://github.com/2landhnal/SpaceShooter.git
 ```
 2. Open folder in Visual Studio 2022
 3. Select debug target
-![alt text](image.png)
+<img src="image.png" alt="alt text" style="display:block; margin-top:10px;" />
 4. Run
-![alt text](image-1.png)
+<img src="image-1.png" alt="alt text" style="display:block; margin-top:10px;" />
 
 ## Features
 - Endless game
