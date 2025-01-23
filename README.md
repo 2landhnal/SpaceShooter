@@ -20,10 +20,10 @@ git clone https://github.com/2landhnal/SpaceShooter.git
 - Highscore saving
 
 ## Pakaged
-https://husteduvn-my.sharepoint.com/:u:/g/personal/nguyen_cb216864_sis_hust_edu_vn/EaSl6uKFKDxEm3_6wynuWV4BoqpupYRYrGWE3g2Y8YciTQ?e=TMNyXo
+[Space shooter](https://husteduvn-my.sharepoint.com/:u:/g/personal/nguyen_cb216864_sis_hust_edu_vn/ET9EDQpjsqJFvoaXw_7m0b0BLBGmwDGS0n4YdOHCtWCoHw?e=Jfz4Zo)
 
 
 ## Reference
 Refactor code from repo below
-https://github.com/meemknight/game-in-cpp-full-course
+[Repo](https://github.com/meemknight/game-in-cpp-full-course)
 
